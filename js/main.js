@@ -26,7 +26,7 @@ function init() {
   renderer.shadowMap.enabled = true;
   stage.appendChild(renderer.domElement);
 
-  // WebXR
+  // WebXR - VRButton
   renderer.xr.enabled = true;
   const vrBtn = VRButton.createButton(renderer);
   document.body.appendChild(vrBtn);
@@ -39,10 +39,15 @@ function init() {
   scene = new THREE.Scene();
   scene.background = new THREE.Color(0x0c0f17);
 
+  // Cámara estándar
   camera = new THREE.PerspectiveCamera(70, stage.clientWidth / stage.clientHeight, 0.1, 1000);
   camera.position.set(0, 1.6, 4);
 
-  // Controles
+  // Cámara VR
+  const vrCamera = new THREE.PerspectiveCamera(70, stage.clientWidth / stage.clientHeight, 0.1, 1000);
+  scene.add(vrCamera); // Asegúrate de agregar la cámara VR a la escena
+
+  // Controles para la cámara regular
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.target.set(0, 1, 0);
@@ -215,6 +220,7 @@ function fitSceneToCamera(root) {
 
   // Colocar la cámara dentro de la estructura (ajustar la distancia a la que se sitúa dentro)
   camera.position.copy(center).add(new THREE.Vector3(0, 1.6, fitDist * 0.5)); // Coloca la cámara dentro de la estructura y ajusta el zoom
+  renderer.xr.getCamera().position.copy(camera.position); // Asegura que la cámara de VR tenga la misma posición que la regular
 
   // Asegúrate de que la cámara esté mirando hacia el centro
   controls.update(); // Esto asegura que los controles se actualicen correctamente
